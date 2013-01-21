@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Użytkownik";
+    Layout = "~/Views/LayoutPage.cshtml";
+}
+
+    <script type="text/javascript">
+        var UserModel = function (first, last) {
+            var baseUri = '@ViewBag.ApiUrl';
+            console.info('baseUri:' + baseUri);
+            var self = this;
+            self.firstName = ko.observable(first);
+            self.lastName = ko.observable(last);
+            self.fullName = ko.computed(function () {
+                return self.firstName() + " " + self.lastName();
+            }, this);
+        };
+    </script>
+      
+    @section jsDocumentReady{
+      $(document).ready(function () {
+          ko.applyBindings(new UserModel("Planet", "Earth")); // This makes Knockout get to work
+      });
+      }
+
+@using(Html.BeginForm()){
+    <h2>Użytkownik <span data-bind='text: fullName'> </span></h2>
+
+    <div class='liveExample'>   
+        <p>Imię: <input data-bind='value: firstName' /></p> 
+        <p>Nazwisko: <input data-bind='value: lastName' /></p>
+    </div>
+    <input type="submit" value="Zapisz" />
+}
