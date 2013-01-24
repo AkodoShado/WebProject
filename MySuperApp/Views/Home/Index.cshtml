@@ -11,6 +11,18 @@
             self.firstName = ko.observable(first);
             self.lastName = ko.observable(last);
             self.email = ko.observable(email);
+
+            self.zapisz = function () {
+                $.ajax({
+                    url: '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Users"})',
+                    type: 'post',
+                    data: { Name: self.firstName(), Surname : self.lastName(), Email : self.email}
+                }).done(function (e) {
+                    console.info('done');
+                });
+            };
+
+
             self.fullName = ko.computed(function () {
                 return self.firstName() + " " + self.lastName() + " " + self.email();
             }, this);
@@ -19,11 +31,16 @@
       
     @section jsDocumentReady{
       $(document).ready(function () {
-          ko.applyBindings(new UserModel("Michał", "Wójcik", "misza.wojcik@gmail.com")); // This makes Knockout get to work
+        $.ajax({
+            url: '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Users", id = "1" })',
+        }).done(function(e) {
+          ko.applyBindings(new UserModel(e.Name, e.Surname, e.Email));
+        });
       });
       }
 
-@using(Html.BeginForm()){
+
+<form data-bind="submit: zapisz">
     <h2>Użytkownik <span data-bind='text: fullName'> </span></h2>
 
     <div class='liveExample'>   
@@ -32,4 +49,4 @@
         <p>Email: <input data-bind='value: email' /></p>
     </div>
     <input type="submit" value="Zapisz" />
-}
+</form>
